@@ -1,7 +1,8 @@
 ﻿using ITravel.Data;
 using ITravel.Models;
-using JobFinder.Service;
+using ITravel.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -68,6 +69,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 
 });
+builder.Services.AddSingleton<IEmailSender, SendMailService>();
 
 var app = builder.Build();
 

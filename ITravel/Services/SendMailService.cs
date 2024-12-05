@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
-namespace JobFinder.Service
+namespace ITravel.Services
 {
     public class MailSettings
     {
@@ -15,13 +15,14 @@ namespace JobFinder.Service
         public int Port { get; set; }
 
     }
-
     public class SendMailService : IEmailSender
     {
         private readonly MailSettings mailSettings;
 
         private readonly ILogger<SendMailService> logger;
 
+        // mailSetting được Inject qua dịch vụ hệ thống
+        // Có inject Logger để xuất log
         public SendMailService(IOptions<MailSettings> _mailSettings, ILogger<SendMailService> _logger)
         {
             mailSettings = _mailSettings.Value;
@@ -41,7 +42,7 @@ namespace JobFinder.Service
             builder.HtmlBody = htmlMessage;
             message.Body = builder.ToMessageBody();
 
-            // use SmtpClient of MailKit
+            // dùng SmtpClient của MailKit
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
 
             try
@@ -52,7 +53,7 @@ namespace JobFinder.Service
             }
             catch (Exception ex)
             {
-                // send mail failed then save in mailssave
+                // Gửi mail thất bại, nội dung email sẽ lưu vào thư mục mailssave
                 System.IO.Directory.CreateDirectory("mailssave");
                 var emailsavefile = string.Format(@"mailssave/{0}.eml", Guid.NewGuid());
                 await message.WriteToAsync(emailsavefile);

@@ -123,6 +123,7 @@ namespace ITravel.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
+                    await _userManager.AddToRoleAsync(user, "Users");
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -133,7 +134,23 @@ namespace ITravel.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        $@"
+    <div style='font-family: Arial, sans-serif;'>
+        <h2 style='color: #2c3e50;'>Welcome to ITravel!</h2>
+        <p style='font-size: 16px; color: #34495e;'>
+            Thank you for signing up! Please confirm your email address by clicking the button below:
+        </p>
+        <div style='text-align : center; margin-top: 20px;'>
+            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' 
+                style='display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; 
+                       text-decoration: none; border-radius: 5px; font-size: 16px;'>
+                Confirm Email
+            </a>
+        </div>
+        <p style='font-size: 14px; color: #7f8c8d; margin-top: 20px;'>
+            If you did not sign up for this account, you can safely ignore this email.
+        </p>
+    </div>");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
