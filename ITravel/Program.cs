@@ -1,5 +1,7 @@
 ﻿using ITravel.Data;
 using ITravel.Models;
+using ITravel.Repository.Implements;
+using ITravel.Repository.Interfaces;
 using ITravel.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -70,6 +72,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 builder.Services.AddSingleton<IEmailSender, SendMailService>();
+
+// Config Repository and Interface
+builder.Services.AddScoped<ITourRepository, TourRepository>();
 
 var app = builder.Build();
 
