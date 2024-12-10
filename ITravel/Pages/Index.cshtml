@@ -103,36 +103,57 @@
             <h1 class="mb-5">Awesome Packages</h1>
         </div>
         <div class="row g-4 justify-content-center">
-
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="package-item">
-                        <div class="overflow-hidden">
-                            <img class="img-fluid" src="images/${ht.getImage()}" alt="">
-                        </div>
-                        <div class="d-flex border-bottom">
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-map-marker-alt text-primary me-2"></i>${ht.getLocation()}</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-calendar-alt text-primary me-2"></i>${ht.getDay()} days</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>${ht.getPerson()} Person</small>
-                        </div>
-                        <div class="text-center p-4">
-                            <h2 class="mb-0">${ht.getTourName()}</h2>
-                            <h3 class="mb-0">$ ${ht.getPrice()}</h3>
-                            <c:choose>
-                                <c:when test="${fn:length(ht.getDescription()) > 100}">
-                                    ${fn:substring(ht.getDescription(), 0, 100)}...
-                                </c:when>
-                                <c:otherwise>
-                                    ${ht.getDescription()}
-                                </c:otherwise>
-                            </c:choose>
-
-                            <div class="d-flex justify-content-center mb-2">
-                                <a href="Detail?id=${ht.tourDateId}" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="OrderDetailServlet?id=${ht.tourDateId}" class="btn btn-sm btn-primary px-3" style="border-radius: 0 30px 30px 0;">Book Now</a>
+            @if (Model.TourDateList != null && Model.TourDateList.Any())
+            {
+                foreach (var tour in Model.TourDateList)
+                {
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                        <div class="package-item">
+                            <div class="overflow-hidden">
+                                <img class="img-fluid" src="~/@tour.Tour.Images.FirstOrDefault()?.URL" alt="@tour.Tour.Name">
                             </div>
+                            <div class="d-flex border-bottom">
+                                <small class="flex-fill text-center border-end py-2">
+                                    <i class="fa fa-map-marker-alt text-primary me-2"></i>@tour.Tour.Location
+                                </small>
+                                <small class="flex-fill text-center border-end py-2">
+                                    <i class="fa fa-calendar-alt text-primary me-2"></i>
+                                    @tour.StartDate.ToString("dd-MM-yyyy") - @tour.EndDate.ToString("dd-MM-yyyy")
+                                </small>
+                                <small class="flex-fill text-center py-2">
+                                    <i class="fa fa-user text-primary me-2"></i>@tour.MaxCapacity Person
+                                </small>
+                            </div>
+                            <div class="text-center p-4">
+                                <h2 class="mb-0">@tour.Tour.Name</h2>
+                                <h3 class="mb-0">$ @tour.Tour.Price</h3>
+                                @if (!string.IsNullOrEmpty(tour.Tour.Description))
+                                {
+                                    <p>
+                                        @if (tour.Tour.Description.Length > 100)
+                                        {
+                                            @(tour.Tour.Description.Substring(0, 100) + "...")
+                                        }
+                                        else
+                                        {
+                                            @tour.Tour.Description
+                                        }
+                                    </p>
+                                }
+                                <div class="d-flex justify-content-center mb-2">
+                                    <a href="Tour/Detail?id=@tour.Id" class="btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a>
+                                    <a href="OrderDetail?id=@tour.Id" class="btn btn-sm btn-primary px-3" style="border-radius: 0 30px 30px 0;">Book Now</a>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                </div>            
+                }
+            }
+            else
+            {
+                <p class="text-center">No tours available at the moment.</p>
+            }
         </div>
     </div>
 </div>
