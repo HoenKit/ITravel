@@ -75,6 +75,9 @@ builder.Services.AddSingleton<IEmailSender, SendMailService>();
 
 // Config Repository and Interface
 builder.Services.AddScoped<ITourRepository, TourRepository>();
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 
 var app = builder.Build();
 

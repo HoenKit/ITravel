@@ -6,5 +6,6 @@ namespace ITravel.Repository.Interfaces
     {
         public ICollection<TourDate> Get5RecentTours();
         public TourDate GetTourDateById(Guid id);
+        public Tour GetTourByTourDateId(Guid id);
     }
 }

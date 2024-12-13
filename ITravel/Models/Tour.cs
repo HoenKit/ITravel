@@ -12,6 +12,7 @@
         public Provider Provider { get; set; }
         public ICollection<HotelTour> HotelTours { get; set; }
         public ICollection<RestaurantTour> RestaurantTours { get; set; }
+        public ICollection<TourDate> TourDates { get; set; }
         public int Price { get; set; }
 
     }
