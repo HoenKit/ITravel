@@ -45,32 +45,32 @@ namespace ITravel.Data
                       .WithOne()
                       .HasForeignKey<Provider>(r => r.UserId);
             });
-            //Hotel-Tour Relationship
-            builder.Entity<HotelTour>(entity =>
-            {
-                entity.HasKey(ht => new { ht.HotelId, ht.TourId }); 
+                //Hotel-Tour Relationship
+                builder.Entity<HotelTour>(entity =>
+                {
+                entity.HasKey(ht => new { ht.HotelId, ht.TourId });
 
-                entity.HasOne<Hotel>() 
-                    .WithMany(h => h.HotelTours) 
-                    .HasForeignKey(ht => ht.HotelId)
-                    .OnDelete(DeleteBehavior.Cascade); 
+                entity.HasOne(ht => ht.Hotel)
+                      .WithMany(h => h.HotelTours) 
+                      .HasForeignKey(ht => ht.HotelId)
+                      .OnDelete(DeleteBehavior.Cascade); 
 
-                entity.HasOne<Tour>() 
-                    .WithMany(t => t.HotelTours) 
-                    .HasForeignKey(ht => ht.TourId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
+                entity.HasOne(ht => ht.Tour)
+                      .WithMany(t => t.HotelTours) 
+                      .HasForeignKey(ht => ht.TourId)
+                      .OnDelete(DeleteBehavior.Cascade); 
+                });
             //Restaurant-Tour Relationship
             builder.Entity<RestaurantTour>(entity =>
             {
                 entity.HasKey(ht => new { ht.RestaurantId, ht.TourId });
 
-                entity.HasOne<Restaurant>()
+                entity.HasOne(ht => ht.Restaurant)
                     .WithMany(h => h.RestaurantTours)
                     .HasForeignKey(ht => ht.RestaurantId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne<Tour>()
+                entity.HasOne(ht => ht.Tour)
                     .WithMany(t => t.RestaurantTours)
                     .HasForeignKey(ht => ht.TourId)
                     .OnDelete(DeleteBehavior.Cascade);

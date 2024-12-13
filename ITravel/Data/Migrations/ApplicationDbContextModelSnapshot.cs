@@ -56,7 +56,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("TourId");
 
-                    b.ToTable("ActivitySchedules");
+                    b.ToTable("ActivitySchedules", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.AppUser", b =>
@@ -160,7 +160,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Bookings", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.Customer", b =>
@@ -190,7 +190,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("BookingId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.Hotel", b =>
@@ -213,7 +213,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hotels");
+                    b.ToTable("Hotels", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.HotelTour", b =>
@@ -228,7 +228,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("TourId");
 
-                    b.ToTable("HotelTours");
+                    b.ToTable("HotelTours", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.Image", b =>
@@ -248,7 +248,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("TourId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.Provider", b =>
@@ -294,7 +294,7 @@ namespace ITravel.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Providers");
+                    b.ToTable("Providers", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.Restaurant", b =>
@@ -317,7 +317,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Restaurants");
+                    b.ToTable("Restaurants", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.RestaurantTour", b =>
@@ -332,7 +332,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("TourId");
 
-                    b.ToTable("RestaurantTours");
+                    b.ToTable("RestaurantTours", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.Review", b =>
@@ -355,7 +355,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("BookingId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.Tour", b =>
@@ -389,7 +389,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("ProviderId");
 
-                    b.ToTable("Tours");
+                    b.ToTable("Tours", (string)null);
                 });
 
             modelBuilder.Entity("ITravel.Models.TourDate", b =>
@@ -420,7 +420,7 @@ namespace ITravel.Data.Migrations
 
                     b.HasIndex("TourId");
 
-                    b.ToTable("ToursDate");
+                    b.ToTable("ToursDate", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
