@@ -73,19 +73,16 @@ namespace ITravel.Repository.Implements
             return new PageResult<TourDate>(tours, totalCount, page, pageSize);
         }
 
-
+        public Tour GetTourByTourDateId(Guid id) =>
+            _context.Tours
+           .Include(t => t.TourDates)
+           .FirstOrDefault(t => t.TourDates.Any(td => td.Id == id));
 
         public TourDate GetTourDateById(Guid id) =>
         _context.ToursDate
         .Include(t => t.Tour)
             .ThenInclude(tour => tour.Images) 
-        .Include(t => t.Tour)
-            .ThenInclude(tour => tour.HotelTours) 
-                .ThenInclude(hotelTour => hotelTour.Hotel) 
-        .Include(t => t.Tour)
-            .ThenInclude(tour => tour.RestaurantTours) 
-                .ThenInclude(restaurantTour => restaurantTour.Restaurant) 
         .FirstOrDefault(t => t.Id == id);
-
+      
     }
 }
