@@ -4,33 +4,8 @@
     ViewData["Title"] = "Home page";
 }
 
-<br />
-<br />
-<br />
-<br />
-<br />
-<!-- Topbar Start -->
-<div class="container-fluid bg-dark px-5 d-none d-lg-block">
-    <div class="row gx-0">
-        <div class="col-lg-8 text-center text-lg-start mb-2 mb-lg-0">
-            <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <small class="me-3 text-light"><i class="fa fa-map-marker-alt me-2"></i> 286 Nguyen Van Linh Street, Da Nang, Viet Nam</small>
-                <small class="me-3 text-light"><i class="fa fa-phone-alt me-2"></i>091-756-5960</small>
-                <small class="text-light"><i class="fa fa-envelope-open me-2"></i>C4T@gmail.com</small>
-            </div>
-        </div>
-        <div class="col-lg-4 text-center text-lg-end">
-            <div class="d-inline-flex align-items-center" style="height: 45px;">
-                <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href=""><i class="fab fa-twitter fw-normal"></i></a>
-                <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href=""><i class="fab fa-facebook-f fw-normal"></i></a>
-                <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href=""><i class="fab fa-linkedin-in fw-normal"></i></a>
-                <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href=""><i class="fab fa-instagram fw-normal"></i></a>
-                <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle" href=""><i class="fab fa-youtube fw-normal"></i></a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Topbar End -->
+
+
 <!-- About Start -->
 <div class="container-xxl py-5">
     <div class="container">
@@ -126,7 +101,7 @@
                             </div>
                             <div class="text-center p-4">
                                 <h2 class="mb-0">@tour.Tour.Name</h2>
-                                <h3 class="mb-0">$ @tour.Tour.Price</h3>
+                                        <h3 class="mb-0">@string.Format("{0:N0}", tour.Tour.Price) đ</h3>
                                 @if (!string.IsNullOrEmpty(tour.Tour.Description))
                                 {
                                     <p>

@@ -1,13 +1,13 @@
 ﻿@page
 @model ITravel.Pages.Tour.TourListModel
 @{
-    Layout = "_Layout";
+    
 }
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/ITravel.styles.css" asp-append-version="true" />
 <div class="container-xxl py-5">
-    <div class="container">
+    
         <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
             <h6 class="section-title bg-white text-center text-primary px-3">Packages</h6>
             <h1 class="mb-5">Awesome Packages</h1>
@@ -49,7 +49,7 @@
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                         <div class="package-item">
                             <div class="overflow-hidden">
-                                <img class="img-fluid" src="@tour.Tour.Images?.FirstOrDefault()?.URL" alt="@tour.Tour.Location">
+                                <img class="img-fluid" src="~/@tour.Tour.Images?.FirstOrDefault()?.URL" alt="@tour.Tour.Location">
                             </div>
                             <div class="d-flex border-bottom">
                                 <small class="flex-fill text-center border-end py-2">
@@ -65,7 +65,7 @@
                             </div>
                             <div class="text-center p-4">
                                 <h2 class="mb-0">@tour.Tour.Name</h2>
-                                <h3 class="mb-0">$@tour.Tour.Price</h3>
+                                <h3 class="mb-0">@string.Format("{0:N0}", tour.Tour.Price) đ</h3>
                                 @if (!string.IsNullOrEmpty(tour.Tour.Description))
                                 {
                                     <p>
@@ -118,5 +118,5 @@
 
             </nav>
         <!-- Pagination End -->
-    </div>
+    
 </div>

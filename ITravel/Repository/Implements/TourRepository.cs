@@ -17,7 +17,8 @@ namespace ITravel.Repository.Implements
         .Include(t => t.Tour) 
         .ThenInclude(tour => tour.Images) 
         .OrderByDescending(t => t.StartDate) 
-        .Take(10) 
+        .Take(10)
+        .Where(td => !td.IsDeleted && !td.Tour.IsDeleted)
         .ToList();
 
         public async Task<PageResult<TourDate>> GetToursPagedAsync(
