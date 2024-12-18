@@ -1,5 +1,6 @@
 ﻿using ITravel.Models;
 using ITravel.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -35,13 +36,15 @@ namespace ITravel.Pages.Tour
 
         [BindProperty]
         public int Rating { get; set; }
-        public TourDate Tour {  get; set; }
+        public TourDate Tour { get; set; }
         public ICollection<Hotel> Hotels { get; set; }
         public ICollection<Restaurant> Restaurants { get; set; }
         public ICollection<ActivitySchedule> ActivitySchedules { get; set; }
         public ICollection<Review> Reviews { get; set; }
-        public int Time {  get; set; }
+        public int Time { get; set; }
         public int FullPrice { get; set; }
+        [BindProperty]
+        public Review Review { get; set; }
         public void OnGet(Guid id)
         {
             if (User.Identity.IsAuthenticated)
@@ -58,9 +61,8 @@ namespace ITravel.Pages.Tour
             TimeSpan timeSpan = Tour.EndDate.Date - Tour.StartDate.Date;
             Time = timeSpan.Days;
             FullPrice = (int)Math.Ceiling(Tour.Tour.Price * Tour.MaxCapacity * 0.85);
-            
-        }
 
+        }
         public IActionResult OnPostCreateReview(Guid id, string userId)
         {
             if (!Guid.TryParse(userId, out Guid parsedUserId))
@@ -75,21 +77,41 @@ namespace ITravel.Pages.Tour
                 return RedirectToPage("/Error", new { message = "No unused bookings found." });
             }
 
-            if (ModelState.IsValid)
+            var newReview = new Review
             {
-                var newReview = new Review
-                {
-                    Booking = Bookings.FirstOrDefault(),
-                    Content = Content,
-                    Rating = Rating,
-                };
+                Booking = Bookings.FirstOrDefault(),
+                Content = Content,
+                Rating = Rating,
+            };
 
-                _reviewRepository.CreateReview(newReview);
+            _reviewRepository.CreateReview(newReview);
+
+            return RedirectToPage("/Tour/Detail", new { id });
+        }
+        public IActionResult OnPost(string action, Guid reviewId, Guid id, string content, int ratingModal)
+        {
+            if (action == "delete")
+            {
+                _reviewRepository.DeleteReview(reviewId);
+
+                return RedirectToPage("/Tour/Detail", new { id });
+            }
+            if (action == "edit")
+            {
+                var review = _reviewRepository.GetReviewById(reviewId);
+
+                if (review != null)
+                {
+                    review.Content = content;
+                    review.Rating = ratingModal;
+
+                    _reviewRepository.UpdateReview(review);
+                }
 
                 return RedirectToPage("/Tour/Detail", new { id });
             }
 
-            return Page();
+            return RedirectToPage("/Tour/Detail", new { id });
         }
 
     }
