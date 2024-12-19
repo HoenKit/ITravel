@@ -38,9 +38,9 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.ConfigureApplicationCookie(options => {
 
-    options.LoginPath = "/Login/";
-    options.LogoutPath = "/Logout/"; // Customize logout path
-    options.AccessDeniedPath = "/AccessDenied/"; // Customize access denied path
+    options.LoginPath = "/Identity/Account/Login/";
+    options.LogoutPath = "/Identity/Account/Logout/"; // Customize logout path
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied/"; // Customize access denied path
     options.SlidingExpiration = false; // Disable sliding expiration if not needed
 });
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
@@ -80,6 +80,7 @@ builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 
 var app = builder.Build();
 
