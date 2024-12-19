@@ -14,6 +14,12 @@ namespace ITravel.Repository.Implements
             _context = context;
         }
 
+        public void CreateBooking(Booking booking)
+        {
+            _context.Bookings.Add(booking);
+            _context.SaveChanges();
+        }
+
         public Booking GetBookingById(Guid bookingId) => _context.Bookings.Where(b => b.Id == bookingId).FirstOrDefault();
         
 

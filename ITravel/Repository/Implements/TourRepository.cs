@@ -17,7 +17,7 @@ namespace ITravel.Repository.Implements
         .Include(t => t.Tour) 
         .ThenInclude(tour => tour.Images) 
         .OrderByDescending(t => t.StartDate) 
-        .Take(10)
+        .Take(5)
         .Where(td => !td.IsDeleted && !td.Tour.IsDeleted)
         .ToList();
 
@@ -77,12 +77,14 @@ namespace ITravel.Repository.Implements
         public Tour GetTourByTourDateId(Guid id) =>
             _context.Tours
            .Include(t => t.TourDates)
+           .Where(td => !td.IsDeleted)
            .FirstOrDefault(t => t.TourDates.Any(td => td.Id == id));
 
         public TourDate GetTourDateById(Guid id) =>
         _context.ToursDate
         .Include(t => t.Tour)
-            .ThenInclude(tour => tour.Images) 
+            .ThenInclude(tour => tour.Images)
+        .Where(td => !td.IsDeleted && !td.Tour.IsDeleted)
         .FirstOrDefault(t => t.Id == id);
       
     }

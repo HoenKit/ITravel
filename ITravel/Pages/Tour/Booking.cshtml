@@ -1,0 +1,185 @@
+﻿@page
+@model ITravel.Pages.Tour.BookingModel
+@{
+}
+
+<form method="post" onsubmit="return validateCustomerList()">
+    <div style="padding: 100px 50px 50px 50px;">
+        <h1 style="margin-bottom: 40px">Tóm tắt chuyến đi</h1>
+        <div style="display: flex">
+            <div style="width: 70%;margin-right: 20px">
+                <h4>Thông tin liên lạc</h4>
+                <div style="padding: 20px; background-color: #ededed; display: flex; flex-wrap: wrap">
+                    <input type="hidden" id="userId" name="userId" value="@Model.Auth.Id">
+                    <div style="width: 50%; padding: 20px">
+                        <label>Họ và Tên</label><span style="color: red">*</span>
+                        <input name="name" value="@Model.Auth.FullName" class="form-control" style="background-color:white" />
+                    </div>
+                    <div style="width: 50%; padding: 20px">
+                        <label>Email</label><span style="color: red">*</span>
+                        <input name="email" value="@Model.Auth.Email" class="form-control" readonly style="background-color:white" />
+                    </div>
+                    <div style="width: 50%; padding: 20px">
+                        <label>Số điện thoại</label><span style="color: red">*</span>
+                        <input value="@Model.Auth.PhoneNumber" class="form-control" style="background-color:white" />
+                    </div>
+                    <div style="width: 50%; padding: 20px">
+                        <label>Địa chỉ</label>
+                        <input value="@Model.Auth.Address" class="form-control" style="background-color:white" />
+                    </div>
+
+                </div>
+                <div style="margin-top: 20px; display: flex">
+                    <h3>Số khách</h3>
+                    <div style="margin-left: 5%;">
+                        <button onclick="decrementValue()">-</button>
+                        <input id="numeric-input" type="number" name="people" value="1" readonly/>
+                        <button onclick="incrementValue()">+</button>
+                    </div>
+                </div>
+                <div id="customer-list" style="margin-top: 20px;">
+                    <!-- Customer List -->
+                </div>
+            </div>
+
+            <div style="width: 30%; padding: 20px; border: 1px solid">
+                <h3>Tóm tắt</h3>
+                <input type="hidden" id="id" name="id" value="@Model.TourDateId">
+                <div style="display: flex; align-items: center">
+                    <div style="width: 30%">
+                        <img style="width: 100%" src="~/@Model.Tour.Tour.Images.FirstOrDefault()?.URL" />
+                    </div>
+                    <div style="width:70%; padding-left: 10px">
+                        <h4>@Model.Tour.Tour.Name</h4>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 10px">
+                    <h5>Ngày khởi hành</h5>
+                    <div style="padding-left: 20px">@Model.Tour.StartDate.ToString("dd/MM/yyyy")</div>
+                    <input type="hidden" id="dateStart" name="dateStart" value="@Model.Tour.StartDate" />
+                    <h5>Ngày kết thúc</h5>
+                    <div style="padding-left: 20px">@Model.Tour.EndDate.ToString("dd/MM/yyyy")</div>
+                    <h5>Số khách tối đa</h5>
+                    <div style="padding-left: 20px">@Model.Tour.MaxCapacity</div>
+                    <input type="hidden" id="current" name="current" value="@Model.Tour.MaxCapacity" />
+                    <h5>Số khách hiện tại</h5>
+                    <div style="padding-left: 20px">@Model.Tour.CurrentCapacity</div>
+                    <input type="hidden" id="current" name="current" value="@Model.Tour.CurrentCapacity" />
+                </div>
+
+                <div style="display: flex; justify-content: space-between">
+                    <h5>Mỗi khách: </h5>
+                    <h5>@string.Format("{0:N0}", @Model.Tour.Tour.Price) đ</h5>
+                </div>
+
+                <div style="display: flex; justify-content: space-between">
+                    <div>Khách: </div>
+                    <div><span id="nog">1</span> X <span>@string.Format("{0:N0}", @Model.Tour.Tour.Price)</span> đ</div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between">
+                    <h4>Hoá đơn: </h4>
+                    <h4 id="price" name="price">@string.Format("{0:N0}", @Model.Tour.Tour.Price) đ</h4>
+                    <input type="hidden" id="price-input" name="priceInput" value="@Model.Tour.Tour.Price" />
+                </div>
+
+                <button type="submit" style="width: 100%; padding: 15px; color: white; background-color: #5fc400; border: 0px solid; font-weight: bold">Thanh toán</button>
+            </div>
+        </div>
+        <button type="button" onclick="history.back();" class="btn btn-secondary">Quay lại</button>
+    </div>
+</form>     
+<script>
+    function incrementValue() {
+        event.preventDefault();
+        var value = parseInt(document.getElementById('numeric-input').value, 10);
+        value = isNaN(value) ? 0 : value;
+        value++;
+        document.getElementById('numeric-input').value = value;
+        updateNOG();
+        updateCustomerList(value);
+    }
+
+    function decrementValue() {
+        event.preventDefault();
+        var value = parseInt(document.getElementById('numeric-input').value, 10);
+        value = isNaN(value) ? 0 : value;
+        if (value > 1) {
+            value--;
+            document.getElementById('numeric-input').value = value;
+            updateNOG();
+            updateCustomerList(value);
+        }
+    }
+
+    function updateNOG() {
+        var value = parseInt(document.getElementById("numeric-input").value, 10);
+        value = isNaN(value) ? 0 : value;
+
+        // Update the number of guests
+        document.getElementById("nog").innerHTML = value;
+
+        // Get the price from the hidden input field
+        var price = parseFloat(document.getElementById("price-input").value);
+
+        // Calculate the new price
+        var newprice = value * price;
+
+        // Format the new price with thousand separators
+        document.getElementById("price").innerHTML = newprice.toLocaleString("en-US") + " đ";
+    }
+    function updateCustomerList(count) {
+        const customerList = document.getElementById("customer-list");
+        customerList.innerHTML = ""; 
+
+        for (let i = 0; i < count; i++) {
+            const customerDiv = document.createElement("div");
+            customerDiv.style.marginBottom = "10px";
+
+            customerDiv.innerHTML = `
+                <label>Khách số ${i + 1}:</label>
+                <input type="text" name="customers[${i}].Name" placeholder="Tên" required style="margin-left: 10px;" />
+                <input type="text" name="customers[${i}].Phone" placeholder="Số điện thoại" required style="margin-left: 10px;" />
+                <input type="text" name="customers[${i}].IdentifyId" placeholder="CMND/CCCD" required style="margin-left: 10px;" />
+            `;
+
+            customerList.appendChild(customerDiv);
+        }
+    }
+    function validateCustomerList() {
+        const customerList = document.querySelectorAll("#customer-list div");
+        let isValid = true;
+
+        customerList.forEach((customerDiv, index) => {
+            const phoneInput = customerDiv.querySelector(`input[name="customers[${index}].Phone"]`);
+            const identityIdInput = customerDiv.querySelector(`input[name="customers[${index}].IdentifyId"]`);
+
+            // Validate phone: must be numeric and have 10-11 digits
+            const phonePattern = /^\d{10,11}$/;
+            if (!phonePattern.test(phoneInput.value)) {
+                phoneInput.style.border = "1px solid red";
+                isValid = false;
+            } else {
+                phoneInput.style.border = "";
+            }
+
+            // Validate Identity ID: must be numeric and exactly 12 digits
+            const identityIdPattern = /^\d{12}$/;
+            if (!identityIdPattern.test(identityIdInput.value)) {
+                identityIdInput.style.border = "1px solid red";
+                isValid = false;
+            } else {
+                identityIdInput.style.border = "";
+            }
+        });
+
+        if (!isValid) {
+            alert("Please enter valid Phone and Identity ID for all customers.");
+        }
+        return isValid;
+    }
+
+    updateCustomerList(1);
+
+</script>

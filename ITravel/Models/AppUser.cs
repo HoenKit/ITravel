@@ -8,5 +8,8 @@ namespace ITravel.Models
 
         public string? Avatar { get; set; }
         public ICollection<Booking> Bookings { get; set; }
+        public string? FullName { get; set; }
+        public string? Address { get; set; }
+
     }
 }
