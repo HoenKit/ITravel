@@ -6,6 +6,7 @@ using ITravel.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Net.payOS;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 .AddDefaultUI()
 .AddDefaultTokenProviders();
 
-
+builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddAuthorization(options =>
@@ -81,6 +82,17 @@ builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// Config for PayOs
+var configuration = builder.Configuration;
+PayOS payOS = new PayOS(
+    configuration["Environment:PAYOS_CLIENT_ID"] ?? throw new Exception("PAYOS_CLIENT_ID không được tìm thấy"),
+    configuration["Environment:PAYOS_API_KEY"] ?? throw new Exception("PAYOS_API_KEY không được tìm thấy"),
+    configuration["Environment:PAYOS_CHECKSUM_KEY"] ?? throw new Exception("PAYOS_CHECKSUM_KEY không được tìm thấy")
+);
+
+builder.Services.AddSingleton(payOS);
 
 var app = builder.Build();
 
