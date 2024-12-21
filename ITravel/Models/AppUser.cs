@@ -7,7 +7,7 @@ namespace ITravel.Models
         public int ProfileStatus { get; set; } = 0;
 
         public string? Avatar { get; set; }
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
         public string? FullName { get; set; }
         public string? Address { get; set; }
 
