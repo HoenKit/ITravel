@@ -133,22 +133,22 @@ namespace ITravel.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    await _emailSender.SendEmailAsync(Input.Email, "Xác nhận email",
                         $@"
     <div style='font-family: Arial, sans-serif;'>
-        <h2 style='color: #2c3e50;'>Welcome to ITravel!</h2>
+        <h2 style='color: #2c3e50;'>Chào mừng tới ITravel!</h2>
         <p style='font-size: 16px; color: #34495e;'>
-            Thank you for signing up! Please confirm your email address by clicking the button below:
+            Cảm ơn vì đã đăng kí! Xác nhận email bằng cách nhấn nút bên dưới:
         </p>
         <div style='text-align : center; margin-top: 20px;'>
             <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' 
                 style='display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; 
                        text-decoration: none; border-radius: 5px; font-size: 16px;'>
-                Confirm Email
+                Xác nhận Email
             </a>
         </div>
         <p style='font-size: 14px; color: #7f8c8d; margin-top: 20px;'>
-            If you did not sign up for this account, you can safely ignore this email.
+            Nếu như không phải bạn đăng kí, xin hãy mặc kệ thông báo này.
         </p>
     </div>");
 

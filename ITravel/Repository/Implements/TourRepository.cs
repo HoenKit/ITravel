@@ -86,6 +86,12 @@ namespace ITravel.Repository.Implements
             .ThenInclude(tour => tour.Images)
         .Where(td => !td.IsDeleted && !td.Tour.IsDeleted)
         .FirstOrDefault(t => t.Id == id);
-      
+
+        public void UpdateTourDate(TourDate newTourDate)
+        {
+            var tourDate = GetTourDateById(newTourDate.Id);
+            _context.ToursDate.Update(tourDate);
+            _context.SaveChanges();
+        }
     }
 }

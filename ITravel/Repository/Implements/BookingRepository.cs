@@ -20,7 +20,7 @@ namespace ITravel.Repository.Implements
             _context.SaveChanges();
         }
 
-        public Booking GetBookingById(Guid bookingId) => _context.Bookings.Where(b => b.Id == bookingId).FirstOrDefault();
+        public Booking GetBookingById(Guid bookingId) => _context.Bookings.Include(b => b.User).Where(b => b.Id == bookingId).FirstOrDefault();
         
 
         public ICollection<Booking> GetUnusedBookingsByTourDateIdAndUserId(Guid tourDateId, Guid userId) =>
@@ -31,5 +31,11 @@ namespace ITravel.Repository.Implements
                     && b.Reviews.Count == 0) 
         .ToList();
 
+        public void UpdateBooking(Booking booking)
+        {
+            var updateBooking = GetBookingById(booking.Id);
+            _context.Bookings.Update(updateBooking);
+            _context.SaveChanges();
+        }
     }
 }

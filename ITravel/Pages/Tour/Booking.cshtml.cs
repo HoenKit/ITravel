@@ -109,7 +109,7 @@ namespace ITravel.Pages.Tour
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    _logger.LogError("Unexpected error when trying to set phone number.");
+                    _logger.LogError("Xảy ra lỗi khi cập nhật số điện thoại.");
                     return Page();
                 }
             }
@@ -134,6 +134,12 @@ namespace ITravel.Pages.Tour
                 ModelState.AddModelError("", "Số lượng khách không khớp hoặc dữ liệu không hợp lệ.");
                 return Page();
             }
+            if(tourDate.CurrentCapacity + People > tourDate.MaxCapacity) 
+            {
+                ModelState.AddModelError("", "Số lượng khách không được vượt số lượng tối đa.");
+                return Page();
+            }
+
 
             //// Create booking
             //var booking = new Booking
