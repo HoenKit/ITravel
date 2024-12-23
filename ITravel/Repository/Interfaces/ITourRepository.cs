@@ -16,5 +16,6 @@ namespace ITravel.Repository.Interfaces
            string location = null);
        
         public Tour GetTourByTourDateId(Guid id);
+        public void UpdateTourDate(TourDate newTourDate);
     }
 }

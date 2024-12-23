@@ -1,0 +1,102 @@
+﻿@page
+@model ITravel.Pages.Provider.ConfirmBookingModel
+@{
+    ViewData["Title"] = "Xác nhận Đặt chỗ";
+}
+
+<div class="container mt-5">
+    <div class="card p-4 shadow-sm">
+        <h2 class="text-center mb-4">Xác Nhận Mã QR</h2>
+
+        <!-- Form to upload QR code image -->
+        <form id="qrCodeForm" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="qrCodeImage" class="form-label">Tải ảnh mã QR:</label>
+                <input type="file" name="qrCodeImage" id="qrCodeImage" accept="image/*" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
+
+            @if (ModelState.ErrorCount > 0)
+            {
+                <div class="alert alert-danger mt-3">
+                    @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            }
+        </form>
+
+        <!-- Camera Video Stream -->
+        <div class="mb-3">
+            <button id="startCamera" class="btn btn-secondary w-100">Sử dụng Máy Ảnh</button>
+            <video id="video" width="100%" height="auto" autoplay></video>
+        </div>
+
+        <div class="mb-3">
+            <button id="capture" class="btn btn-warning w-100">Chụp Ảnh</button>
+        </div>
+
+        <!-- Display captured image -->
+        <div class="mb-3">
+            <img id="capturedImage" style="display:none; width: 100%;" />
+        </div>
+
+        @if (Model.Result != null)
+        {
+            <div class="alert alert-success mt-3">
+                <h4 class="alert-heading">Kết quả mã QR:</h4>
+                <p>@Model.Result</p>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    // Get elements from DOM
+    const startCameraButton = document.getElementById('startCamera');
+    const videoElement = document.getElementById('video');
+    const captureButton = document.getElementById('capture');
+    const capturedImage = document.getElementById('capturedImage');
+
+    // Access user's camera when "startCamera" button is clicked
+    startCameraButton.addEventListener('click', function () {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function (stream) {
+                videoElement.srcObject = stream;
+                videoElement.style.display = 'block'; // Ensure the video is shown
+            })
+            .catch(function (error) {
+                alert("Không thể truy cập vào máy ảnh: " + error.message);
+            });
+    });
+
+    // Capture image when the "capture" button is clicked
+    captureButton.addEventListener('click', function () {
+        // Check if the video element is loaded and has a valid stream
+        if (videoElement.srcObject && videoElement.srcObject.active) {
+            // Create a canvas to capture image from video
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            const context = canvas.getContext('2d');
+
+            // Draw the current frame of the video onto the canvas
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+            // Display the captured image
+            capturedImage.src = canvas.toDataURL('image/png');
+            capturedImage.style.display = 'block'; // Show the captured image
+
+            // Hide the video element
+            videoElement.style.display = 'none';
+        } else {
+            alert("Không có video stream để chụp ảnh.");
+        }
+    });
+
+</script>
+
+
+

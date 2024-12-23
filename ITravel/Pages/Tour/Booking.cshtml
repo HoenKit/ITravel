@@ -1,6 +1,16 @@
 ﻿@page
 @model ITravel.Pages.Tour.BookingModel
 @{
+    ViewData["Title"] = "Booking Tour page";
+}
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var modelError in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@modelError.ErrorMessage</p>
+        }
+    </div>
 }
 
 <form method="post" onsubmit="return validateCustomerList()">

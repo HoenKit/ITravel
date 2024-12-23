@@ -31,5 +31,11 @@ namespace ITravel.Repository.Implements
                     && b.Reviews.Count == 0) 
         .ToList();
 
+        public void UpdateBooking(Booking booking)
+        {
+            var updateBooking = GetBookingById(booking.Id);
+            _context.Bookings.Update(updateBooking);
+            _context.SaveChanges();
+        }
     }
 }
