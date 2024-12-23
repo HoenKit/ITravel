@@ -6,17 +6,10 @@
 
 <div class="container mt-5">
     <div class="card p-4 shadow-sm">
-        <h2 class="text-center mb-4">Xác Nhận Mã QR</h2>
+        <h2 class="text-center mb-4">Chụp hoặc Chọn Ảnh Mã QR</h2>
 
-        <!-- Form to upload QR code image -->
-        <form id="qrCodeForm" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="qrCodeImage" class="form-label">Tải ảnh mã QR:</label>
-                <input type="file" name="qrCodeImage" id="qrCodeImage" accept="image/*" class="form-control" />
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Xác nhận</button>
-
+        <!-- Form -->
+        <form method="post" enctype="multipart/form-data">
             @if (ModelState.ErrorCount > 0)
             {
                 <div class="alert alert-danger mt-3">
@@ -26,22 +19,6 @@
                     }
                 </div>
             }
-        </form>
-
-        <!-- Camera Video Stream -->
-        <div class="mb-3">
-            <button id="startCamera" class="btn btn-secondary w-100">Sử dụng Máy Ảnh</button>
-            <video id="video" width="100%" height="auto" autoplay></video>
-        </div>
-
-        <div class="mb-3">
-            <button id="capture" class="btn btn-warning w-100">Chụp Ảnh</button>
-        </div>
-
-        <!-- Display captured image -->
-        <div class="mb-3">
-            <img id="capturedImage" style="display:none; width: 100%;" />
-        </div>
 
         @if (Model.Result != null)
         {
@@ -50,53 +27,90 @@
                 <p>@Model.Result</p>
             </div>
         }
+            <!-- Chụp ảnh bằng camera -->
+            <div class="mb-3">
+                <label class="form-label">Chụp ảnh bằng camera:</label>
+                <video id="video" autoplay class="w-100 mb-2" style="border: 1px solid #ccc;"></video>
+                <button type="button" id="capture" class="btn btn-secondary w-100 mb-3">Chụp Ảnh</button>
+            </div>
+
+            <!-- Hoặc chọn ảnh từ thư viện -->
+            <div class="mb-3">
+                <label for="fileInput" class="form-label">Hoặc chọn ảnh từ máy:</label>
+                <input type="file" name="fileInput" id="fileInput" accept="image/*" class="form-control" />
+            </div>
+
+            <!-- Hiển thị ảnh chụp hoặc ảnh đã chọn -->
+            <div class="mb-3">
+                <img id="preview" class="img-fluid" style="display: none; border: 1px solid #ccc;" />
+            </div>
+
+            <!-- Input ẩn để lưu ảnh chụp -->
+            <input type="hidden" name="qrCodeImage" id="qrCodeImageInput" />
+
+            <button type="submit" class="btn btn-primary w-100">Gửi</button>
+        </form>
     </div>
 </div>
-
 <script>
-    // Get elements from DOM
-    const startCameraButton = document.getElementById('startCamera');
-    const videoElement = document.getElementById('video');
+    // Lấy tham chiếu tới các phần tử
+    const video = document.getElementById('video');
+    const canvas = document.createElement('canvas');
     const captureButton = document.getElementById('capture');
-    const capturedImage = document.getElementById('capturedImage');
+    const fileInput = document.getElementById('fileInput');
+    const qrCodeImageInput = document.getElementById('qrCodeImageInput');
+    const preview = document.getElementById('preview');
 
-    // Access user's camera when "startCamera" button is clicked
-    startCameraButton.addEventListener('click', function () {
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-                videoElement.srcObject = stream;
-                videoElement.style.display = 'block'; // Ensure the video is shown
-            })
-            .catch(function (error) {
-                alert("Không thể truy cập vào máy ảnh: " + error.message);
-            });
+    // Yêu cầu truy cập camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then((stream) => {
+            video.srcObject = stream;
+        })
+        .catch((error) => {
+            console.error("Lỗi khi truy cập camera:", error);
+            alert("Không thể truy cập camera. Vui lòng kiểm tra cài đặt thiết bị.");
+        });
+
+    // Chụp ảnh khi nhấn nút "Chụp Ảnh"
+    captureButton.addEventListener('click', () => {
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // Vẽ hình ảnh từ video vào canvas
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Lấy dữ liệu ảnh dưới dạng base64
+        const imageData = canvas.toDataURL('image/png');
+
+        // Hiển thị ảnh chụp
+        preview.src = imageData;
+        preview.style.display = 'block';
+
+        // Gán dữ liệu base64 vào input ẩn để gửi qua form
+        qrCodeImageInput.value = imageData;
     });
 
-    // Capture image when the "capture" button is clicked
-    captureButton.addEventListener('click', function () {
-        // Check if the video element is loaded and has a valid stream
-        if (videoElement.srcObject && videoElement.srcObject.active) {
-            // Create a canvas to capture image from video
-            const canvas = document.createElement('canvas');
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            const context = canvas.getContext('2d');
+    // Hiển thị ảnh đã chọn từ thư viện
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
 
-            // Draw the current frame of the video onto the canvas
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-            // Display the captured image
-            capturedImage.src = canvas.toDataURL('image/png');
-            capturedImage.style.display = 'block'; // Show the captured image
-
-            // Hide the video element
-            videoElement.style.display = 'none';
-        } else {
-            alert("Không có video stream để chụp ảnh.");
+                // Gán dữ liệu base64 vào input ẩn để gửi qua form
+                qrCodeImageInput.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
     });
 
 </script>
+
+
+
 
 
 
