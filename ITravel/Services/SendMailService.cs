@@ -1,4 +1,5 @@
-﻿using MailKit.Security;
+﻿using ITravel.Repository.Interfaces;
+using MailKit.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
@@ -15,7 +16,7 @@ namespace ITravel.Services
         public int Port { get; set; }
 
     }
-    public class SendMailService : IEmailSender
+    public class SendMailService : IEmailSender , IEmailService 
     {
         private readonly MailSettings mailSettings;
 
@@ -67,5 +68,52 @@ namespace ITravel.Services
             logger.LogInformation("send mail to: " + email);
 
         }
+        public async Task SendEmailWithQRAsync(string email, string subject, string htmlMessage, Stream attachmentStream = null, string attachmentName = null)
+        {
+            var message = new MimeMessage();
+            message.Sender = new MailboxAddress(mailSettings.DisplayName, mailSettings.Mail);
+            message.From.Add(new MailboxAddress(mailSettings.DisplayName, mailSettings.Mail));
+            message.To.Add(MailboxAddress.Parse(email));
+            message.Subject = subject;
+
+            // Xây dựng nội dung email
+            var builder = new BodyBuilder();
+
+            // Nội dung HTML
+            builder.HtmlBody = htmlMessage;
+
+            // Đính kèm file (nếu có)
+            if (attachmentStream != null && !string.IsNullOrEmpty(attachmentName))
+            {
+                builder.Attachments.Add(attachmentName, attachmentStream, ContentType.Parse("image/png"));
+            }
+
+            message.Body = builder.ToMessageBody();
+
+            // Dùng SmtpClient của MailKit
+            using var smtp = new MailKit.Net.Smtp.SmtpClient();
+
+            try
+            {
+                smtp.Connect(mailSettings.Host, mailSettings.Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(mailSettings.Mail, mailSettings.Password);
+                await smtp.SendAsync(message);
+            }
+            catch (Exception ex)
+            {
+                // Lưu email nếu gửi thất bại
+                System.IO.Directory.CreateDirectory("mailssave");
+                var emailSaveFile = $"mailssave/{Guid.NewGuid()}.eml";
+                await message.WriteToAsync(emailSaveFile);
+
+                logger.LogInformation($"Send mail Error, saved in - {emailSaveFile}");
+                logger.LogError(ex.Message);
+            }
+
+            smtp.Disconnect(true);
+
+            logger.LogInformation($"Email sent to: {email}");
+        }
+
     }
 }
