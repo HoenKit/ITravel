@@ -4,20 +4,16 @@
     ViewData["Title"] = "Register confirmation";
 }
 
-<h1>@ViewData["Title"]</h1>
+
 @{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-<p>
-    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
-</p>
-    }
-    else
-    {
-<p>
-        Please check your email to confirm your account.
-</p>
-    }
+    <div style="font-family: 'Roboto', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; margin: 0;">
+        <p style="font-size: 20px; color: #2c3e50; font-weight: 600; margin-bottom: 15px;">
+            Kiểm tra Email để xác nhận tài khoản
+        </p>
+        <p style="font-size: 15px; color: #95a5a6; line-height: 1.6; max-width: 400px;">
+            Sau khi xác nhận tài khoản, bạn có thể đăng nhập về tận hưởng các tính năng chúng tôi cung cấp.
+        </p>
+    </div>
+
 }
 

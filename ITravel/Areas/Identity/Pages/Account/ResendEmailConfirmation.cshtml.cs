@@ -77,10 +77,24 @@ namespace ITravel.Areas.Identity.Pages.Account
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+            await _emailSender.SendEmailAsync(Input.Email, "Xác nhận email",
+                         $@"
+    <div style='font-family: Arial, sans-serif;'>
+        <h2 style='color: #2c3e50;'>Chào mừng tới ITravel!</h2>
+        <p style='font-size: 16px; color: #34495e;'>
+            Cảm ơn vì đã đăng kí! Xác nhận email bằng cách nhấn nút bên dưới:
+        </p>
+        <div style='text-align : center; margin-top: 20px;'>
+            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' 
+                style='display: inline-block; padding: 10px 20px; background-color: #3498db; color: #ffffff; 
+                       text-decoration: none; border-radius: 5px; font-size: 16px;'>
+                Xác nhận Email
+            </a>
+        </div>
+        <p style='font-size: 14px; color: #7f8c8d; margin-top: 20px;'>
+            Nếu như không phải bạn đăng kí, xin hãy mặc kệ thông báo này.
+        </p>
+    </div>");
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();

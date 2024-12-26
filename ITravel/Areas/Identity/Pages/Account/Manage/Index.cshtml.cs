@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ITravel.Models;
+using ITravel.Repository.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,13 +18,16 @@ namespace ITravel.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IUserRepository _userRepository;
 
         public IndexModel(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+            SignInManager<AppUser> signInManager,
+            IUserRepository userRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _userRepository = userRepository;
         }
 
         /// <summary>
@@ -56,9 +60,26 @@ namespace ITravel.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Phone]
+            [Required(ErrorMessage = "Phone number is required.")]
+            [Phone(ErrorMessage = "Please enter a valid phone number.")]
             [Display(Name = "Phone number")]
+            [RegularExpression(@"^(\+84\d{9,10}|0\d{9,10})$", ErrorMessage = "Please enter a valid Phone number and contain 10 to 11 digits.")]
             public string PhoneNumber { get; set; }
+
+            [BindProperty]
+            [Required(ErrorMessage = "Xin hãy nhập đầy đủ họ tên")]
+            [Display(Name = "Full name")]
+            public string FullName { get; set; }
+            [Display(Name = "Province/City")]
+            public string Province { get; set; }
+
+
+            [Display(Name = "District")]
+            public string District { get; set; }
+            [BindProperty]
+            [Required(ErrorMessage = "Xin hãy nhập địa chỉ")]
+            [Display(Name = "Full Address")]
+            public string Address { get; set; }
         }
 
         private async Task LoadAsync(AppUser user)
@@ -66,11 +87,14 @@ namespace ITravel.Areas.Identity.Pages.Account.Manage
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
+
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FullName = user.FullName,
+                Address = user.Address,
             };
         }
 
@@ -99,7 +123,7 @@ namespace ITravel.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
-
+            
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -110,7 +134,9 @@ namespace ITravel.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
-
+            user.Address = Input.Address;
+            user.FullName = Input.FullName;
+            _userRepository.UpdateUser(user);
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
