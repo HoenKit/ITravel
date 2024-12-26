@@ -1,5 +1,5 @@
 ﻿@page
-@model RegisterModel
+@model ITravel.Areas.Identity.Pages.Account.RegisterProviderModel
 @{
     ViewData["Title"] = "Đăng kí";
 }
@@ -9,7 +9,7 @@
             <section class="card shadow-lg p-4">
                 <h2 class="text-center mb-4">@ViewData["Title"]</h2>
                 <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                    <h5 class="mb-3 text-center">Trở thành người dùng</h5>
+                    <h5 class="mb-3 text-center">Trở thành nhà cung cấp Tour</h5>
                     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
 
                     <div class="form-floating mb-3">
@@ -45,13 +45,14 @@
     <div class="row justify-content-center mt-4">
         <div class="col-lg-5 col-md-6 col-sm-12">
             <section class="card shadow-lg p-4">
-                <a class="btn head-btn1" asp-area="Identity" asp-page="/Account/RegisterProvider">Trở thành nhà cung cấp Tour</a>
+                <a class="btn head-btn1" asp-area="Identity" asp-page="/Account/Register">Trở thành người dùng</a>
                 <h5 class="mb-3 text-center">Sử dụng dịch vụ khác để đăng kí</h5>
                 <hr />
                 @{
                     if ((Model.ExternalLogins?.Count ?? 0) == 0)
                     {
                         <div class="text-center">
+                            
                         </div>
                     }
                     else

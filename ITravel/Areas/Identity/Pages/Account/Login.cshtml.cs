@@ -22,11 +22,13 @@ namespace ITravel.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<AppUser> _userManager;
 
-        public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger, UserManager<AppUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -65,15 +67,15 @@ namespace ITravel.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            [Required(ErrorMessage = "You must enter Username or Email")]
+            //[EmailAddress]
+            public string UsernameOrEmail { get; set; }
 
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
+            [Required(ErrorMessage = "You must enter password")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -81,12 +83,18 @@ namespace ITravel.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Ghi nhớ")]
             public bool RememberMe { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                returnUrl ??= Url.Content("~/");
+                Response.Redirect(returnUrl);
+                return; // Exit the method to prevent further execution
+            }
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -110,12 +118,45 @@ namespace ITravel.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                // First, check if the user exists by email or username
+                var user = await _userManager.FindByEmailAsync(Input.UsernameOrEmail) ??
+                           await _userManager.FindByNameAsync(Input.UsernameOrEmail);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Account not found.");
+                    return Page();
+                }
+
+                // Check ProfileStatus if user is found
+                if (user.ProfileStatus == 1)
+                {
+                    ModelState.AddModelError(string.Empty, "Your account is banned. Please contact support.");
+                    return Page();
+                }
+
+                // Attempt to sign in the user
+                var result = await _signInManager.PasswordSignInAsync(Input.UsernameOrEmail, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+
+                // If login fails with email or username, try with user.UserName
+                if (!result.Succeeded && user != null)
+                {
+                    result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                }
+
+                // Handle various outcomes of the sign-in attempt
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+                    if (User.IsInRole("Administrator"))
+                    {
+                        return LocalRedirect("/Identity/Admin/Dashboard");
+                    }
+                    if (User.IsInRole("Recruiter"))
+                    {
+                        return LocalRedirect("/Identity/RecruiterInfo/Index");
+                    }
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -133,7 +174,6 @@ namespace ITravel.Areas.Identity.Pages.Account
                     return Page();
                 }
             }
-
             // If we got this far, something failed, redisplay form
             return Page();
         }
