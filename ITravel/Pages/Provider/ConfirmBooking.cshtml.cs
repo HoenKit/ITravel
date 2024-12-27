@@ -77,7 +77,7 @@ namespace ITravel.Pages.Provider
             }
             booking.IsUsed = true;
             _bookingRepository.UpdateBooking(booking);
-            Result = $"Mã hợp lệ. Khách hàng: {booking.User.FullName}";
+            Result = $"Mã hợp lệ. Khách hàng: {booking.User.FullName}. Tour: {booking.TourDate.Tour.Name} {(booking.IsFullTour ? "Đặt trọn gói" : "")}";
             return Page();
         }
 
