@@ -20,7 +20,12 @@ namespace ITravel.Repository.Implements
             _context.SaveChanges();
         }
 
-        public Booking GetBookingById(Guid bookingId) => _context.Bookings.Include(b => b.User).Where(b => b.Id == bookingId).FirstOrDefault();
+        public Booking GetBookingById(Guid bookingId) => 
+        _context.Bookings
+        .Include(t => t.TourDate)
+            .ThenInclude(t => t.Tour)
+        .Include(b => b.User)
+        .Where(b => b.Id == bookingId).FirstOrDefault();
         
 
         public ICollection<Booking> GetUnusedBookingsByTourDateIdAndUserId(Guid tourDateId, Guid userId) =>

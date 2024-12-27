@@ -77,15 +77,7 @@
             <div style="width: 50%; display: flex; align-items: center">
                 <div style="width: 50%;font-size: 70%; text-align: right; padding-right: 10px; color: red">@string.Format("{0:N0}", @Model.FullPrice) đ</div>
                 <div style="width: 50%;font-size: 50%">
-                    <form method="get" action="/Tour/Booking" style="display: inline-block; text-align: center; border: solid 1px; padding: 10px; margin-bottom: 5px; width: 300px; background-color: red; color: white; border-radius: 3%">
-                        <input type="hidden" name="tourId" value="@Model.TourDateId" />
-                        <input type="hidden" name="people" value="@Model.Tour.MaxCapacity" />
-                        <input type="hidden" name="fullPrice" value="@Model.FullPrice" />
-
-                        <button type="submit" style="background-color: red; color: white; border: none; width: 100%;">
-                            <i class="fa-solid fa-cart-shopping"></i> Đặt trọn gói
-                        </button>
-                    </form>
+                    <a href="BookingFullTour?tourId=@Model.TourDateId" style="display: inline-block; text-align: center; border:solid 1px; padding: 10px; margin-bottom: 5px; width: 300px; background-color: red; color:white; border-radius: 3%"><i class="fa-solid fa-cart-shopping"></i> Đặt trọn gói</a>
                 </div>
             </div>
         </div>

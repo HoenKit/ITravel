@@ -32,7 +32,7 @@ namespace ITravel.Pages.Tour
             _customerRepository = customerRepository;
             _emailSender = emailSender;
         }
-        public async Task<IActionResult> OnGetAsync(Guid tourId)
+        public async Task<IActionResult> OnGetAsync(Guid tourId, string action)
         {
             // Retrieve the customer list and people count from TempData
             var customersJson = TempData["Customers"] as string;
@@ -59,8 +59,15 @@ namespace ITravel.Pages.Tour
                 ModelState.AddModelError("", "Không tìm thấy thông tin chuyến tham quan.");
                 return Page();
             }
-            tourDate.CurrentCapacity += people.Value;
-            _tourRepository.UpdateTourDate(tourDate);
+            if (action != "fullTour")
+            {
+                tourDate.CurrentCapacity += people.Value;
+                _tourRepository.UpdateTourDate(tourDate);
+            }
+
+            int totalPrice = action == "fullTour"
+                ? (int)Math.Ceiling(tourDate.Tour.Price * tourDate.MaxCapacity * 0.85)
+                : tourDate.Tour.Price * people.Value;
 
             var booking = new Booking
             {
@@ -68,7 +75,8 @@ namespace ITravel.Pages.Tour
                 User = user,
                 BookingDate = DateTime.Now,
                 NumberOfPeople = people.Value,
-                TotalPrice = tourDate.Tour.Price * people.Value
+                TotalPrice = totalPrice,
+                IsFullTour = action == "fullTour"
             };
 
             _bookingRepository.CreateBooking(booking);
