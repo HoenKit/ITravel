@@ -1,0 +1,31 @@
+﻿@page
+@model ITravel.Pages.User.CustomerListModel
+@{
+    ViewData["Title"] = "Customer List Page";
+}
+<div class="container">
+    <h2 class="text-center mb-4">Khách hàng</h2>
+    @if (Model.Customers != null && Model.Customers.Any())
+    {
+        <ul class="list-group">
+            @foreach (var app in Model.Customers)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span>Họ và Tên: @app.Name</span>
+                            <br />
+                            <span>Số điện thoại: @app.Phone</span>
+                            <br />
+                            <span>CCCD/CMND: @app.IdentifyId</span>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-center">Không có người nào.</p>
+    }
+</div>
