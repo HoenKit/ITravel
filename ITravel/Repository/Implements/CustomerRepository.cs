@@ -16,5 +16,11 @@ namespace ITravel.Repository.Implements
             _context.Add(customer);
             _context.SaveChanges();
         }
+
+        public ICollection<Customer> GetCustomerByBooking(Guid bookingId) =>
+        _context.Customers
+        .Where(c => c.Booking.Id == bookingId)
+        .ToList();
+        
     }
 }

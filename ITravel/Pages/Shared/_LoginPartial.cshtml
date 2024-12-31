@@ -6,14 +6,33 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Xin chào @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Đăng xuất</button>
-        </form>
-    </li>
+        <div class="header-btn d-none f-right d-lg-block ml-auto">
+            <div class="dropdown">
+                <a href="#" style="border-radius: 10px" class="btn btn-secondary dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Mục lục người dùng
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li class="dropdown-item">
+                        Xin chào, @UserManager.GetUserName(User)
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li class="dropdown-item">
+                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Hồ sơ</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <a class="dropdown-item" asp-page="/User/BookingList">Gói đã đặt</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+                            <button type="submit" class="dropdown-item text-danger">Đăng xuất</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
 }
 else
 {

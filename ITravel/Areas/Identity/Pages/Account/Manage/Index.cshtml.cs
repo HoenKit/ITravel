@@ -8,12 +8,14 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ITravel.Models;
 using ITravel.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ITravel.Areas.Identity.Pages.Account.Manage
 {
+    [Authorize(Roles = "Users")]
     public class IndexModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;

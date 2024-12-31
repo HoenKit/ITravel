@@ -1,0 +1,41 @@
+﻿@page
+@model ITravel.Pages.User.BookingListModel
+@{
+    ViewData["Title"] = "Booking List Page";
+}
+
+<div class="container">
+    <h2 class="text-center mb-4">Các gói đã đặt</h2>
+    @if (Model.Bookings != null && Model.Bookings.Any())
+    {
+        <ul class="list-group">
+            @foreach (var app in Model.Bookings)
+            {
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>@app.TourDate?.Tour?.Name</strong>
+                            <br />
+                            <span>Ngày đặt: @app.BookingDate.ToString("dd/MM/yyyy")</span>
+                            <br />
+                            <span>Trạng thái: @(app.IsUsed ? "Đã sử dụng" : "Chưa sử dụng")</span>
+                            <br />
+                            <span>Kiểu gói: @(app.IsFullTour ? "Đặt trọn gói" : "Đặt bình thường")</span>
+                            <br />
+                            <span>Giá tiền: @string.Format("{0:N0}", app.TotalPrice) đ</span>
+                            <br />
+                            <span>Số người: @app.NumberOfPeople người</span>
+                        </div>
+                        <a href="/User/CustomerList?id=@app.Id" class="btn btn-sm btn-outline-primary">Xem thêm</a>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p class="text-center">Bạn chưa đặt gói nào.</p>
+    }
+</div>
+
+

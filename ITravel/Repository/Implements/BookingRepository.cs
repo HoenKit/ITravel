@@ -26,7 +26,14 @@ namespace ITravel.Repository.Implements
             .ThenInclude(t => t.Tour)
         .Include(b => b.User)
         .Where(b => b.Id == bookingId).FirstOrDefault();
-        
+
+        public ICollection<Booking> GetBookingByUser(Guid userId) =>
+        _context.Bookings
+        .Include(t => t.TourDate)
+            .ThenInclude(t => t.Tour)
+        .Where(b => b.User.Id == userId.ToString())
+        .OrderByDescending(b => b.BookingDate) 
+        .ToList();
 
         public ICollection<Booking> GetUnusedBookingsByTourDateIdAndUserId(Guid tourDateId, Guid userId) =>
         _context.Bookings
