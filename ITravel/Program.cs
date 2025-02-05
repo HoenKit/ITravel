@@ -74,6 +74,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 builder.Services.AddSingleton<IEmailSender, SendMailService>();
 builder.Services.AddScoped<IEmailService, SendMailService>();
+builder.Services.AddHttpClient<AimlService>();
 
 // Config Repository and Interface
 builder.Services.AddScoped<ITourRepository, TourRepository>();

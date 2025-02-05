@@ -14,8 +14,15 @@ namespace ITravel.Repository.Interfaces
            DateTime? startDate = null,
            DateTime? endDate = null,
            string location = null);
-       
+
         public Tour GetTourByTourDateId(Guid id);
         public void UpdateTourDate(TourDate newTourDate);
+        public Task<PageResult<TourDate>> GetToursPagedRecommendAsync(
+           int page,
+           int pageSize,
+           int? price = null,
+           DateTime? startDate = null,
+           DateTime? endDate = null,
+           List<string> suggestionList = null);
     }
 }
