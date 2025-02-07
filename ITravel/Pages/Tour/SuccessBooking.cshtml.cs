@@ -14,7 +14,7 @@ using System.Text.Encodings.Web;
 using ZXing;
 using ZXing.Windows.Compatibility;
 
-namespace ITravel.Pages.Tour
+namespace ITravel.Pages.Toures
 {
     [Authorize(Roles = "Users")]
     public class SuccessBookingModel : PageModel

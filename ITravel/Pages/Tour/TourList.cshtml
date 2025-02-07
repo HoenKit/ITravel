@@ -1,7 +1,7 @@
 ﻿@page
-@model ITravel.Pages.Tour.TourListModel
+@model ITravel.Pages.Toures.TourListModel
 @{
-    
+
 }
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -94,29 +94,29 @@
             }
         </div>
 
-        <!-- Pagination Start -->
-            <nav aria-label="Page navigation">
-                @{
-                    int startPage = Math.Max(1, Model.PagedTours.CurrentPage - 2);
-                    int endPage = Math.Min(Model.PagedTours.TotalPages, Model.PagedTours.CurrentPage + 2);
-                }
-                <ul class="pagination">
-                    <li class="page-item @(Model.PagedTours.CurrentPage == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-page="./TourList" asp-route-pageIndex="@(Model.PagedTours.CurrentPage - 1)">Previous</a>
-                    </li>
-                @for (int i = Math.Max(1, Model.PagedTours.CurrentPage - 2);
-                i <= Math.Min(Model.PagedTours.TotalPages, Model.PagedTours.CurrentPage + 2); i++)
-                    {
-                        <li class="page-item @(i == Model.PagedTours.CurrentPage ? "active" : "")">
-                        <a class="page-link" asp-page="./TourList" asp-route-pageIndex="@i">@i</a>
-                        </li>
-                    }
-                    <li class="page-item @(Model.PagedTours.CurrentPage == Model.PagedTours.TotalPages ? "disabled" : "")">
-                    <a class="page-link" asp-page="./TourList" asp-route-pageIndex="@(Model.PagedTours.CurrentPage + 1)">Next</a>
-                    </li>
-                </ul>
+    <!-- Pagination Start -->
+    <nav aria-label="Page navigation">
+        @{
+            int startPage = Math.Max(1, Model.PagedTours.CurrentPage - 2);
+            int endPage = Math.Min(Model.PagedTours.TotalPages, Model.PagedTours.CurrentPage + 2);
+        }
+        <ul class="pagination">
+            <li class="page-item @(Model.PagedTours.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-page="./TourList" asp-route-pageIndex="@(Model.PagedTours.CurrentPage - 1)">Previous</a>
+            </li>
+            @for (int i = Math.Max(1, Model.PagedTours.CurrentPage - 2);
+            i <= Math.Min(Model.PagedTours.TotalPages, Model.PagedTours.CurrentPage + 2); i++)
+            {
+                <li class="page-item @(i == Model.PagedTours.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-page="./TourList" asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.PagedTours.CurrentPage == Model.PagedTours.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-page="./TourList" asp-route-pageIndex="@(Model.PagedTours.CurrentPage + 1)">Next</a>
+            </li>
+        </ul>
 
-            </nav>
-        <!-- Pagination End -->
-    
+    </nav>
+    <!-- Pagination End -->
+
 </div>

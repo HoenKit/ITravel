@@ -1,0 +1,258 @@
+﻿@page
+@model ITravel.Pages.Admin.AdminHomeModel
+@{
+    Layout = "_AdminLayout";
+}
+        <!-- Main Content -->
+@* <link rel="stylesheet" href="~/css/admin/admin-table.css" /> *@
+<style>
+    body {
+        background-color: #f8f9fa;
+        color: #333;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2, h3 {
+        color: #28a745;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .table {
+        background-color: #fff;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+        .table th {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+        }
+
+        .table td {
+            text-align: center;
+        }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+    .pagination .page-item .page-link {
+        color: #218838;
+        border-radius: 5px;
+        margin: 0 3px;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #218838;
+        border-color: #218838;
+        color: white;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+    }
+</style>
+<div class="container mt-4">
+    <h1>User List</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.PagedUsers.Items)
+            {
+                <tr>
+                    <td>@user.FullName</td>
+                    <td>@user.Email</td>
+                    <td>@user.Address</td>
+                    <td>@(user.ProfileStatus == 1 ? "Banned" : "Active")</td>
+                    <td>
+                        @if (user.ProfileStatus == 0)
+                        {
+                            <form method="post" asp-page-handler="BanUser">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="btn btn-danger">Ban</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="post" asp-page-handler="UnbanUser">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="btn btn-success">Unban</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        @{
+            int startPage = Math.Max(1, Model.PagedUsers.CurrentPage - 2);
+            int endPage = Math.Min(Model.PagedUsers.TotalPages, Model.PagedUsers.CurrentPage + 2);
+        }
+        <ul class="pagination">
+            <li class="page-item @(Model.PagedUsers.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@(Model.PagedUsers.CurrentPage - 1)">Previous</a>
+            </li>
+            @for (int i = Math.Max(1, Model.PagedUsers.CurrentPage - 2);
+            i <= Math.Min(Model.PagedUsers.TotalPages, Model.PagedUsers.CurrentPage + 2); i++)
+            {
+                <li class="page-item @(i == Model.PagedUsers.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.PagedUsers.CurrentPage == Model.PagedUsers.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@(Model.PagedUsers.CurrentPage + 1)">Next</a>
+            </li>
+        </ul>
+
+    </nav>
+</div>
+
+
+<div class="container mt-4">
+    <h2>Tour List</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Company Name</th>
+                <th>Provider</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tour in Model.PageTours.Items)
+            {
+                <tr>
+                    <td>@tour.Name</td>
+                    <td>@tour.Description</td>  
+                    <td>@tour.Location</td>
+                    <td>
+                        @tour.Provider.CompanyName
+                    </td>
+                    <td>@tour.Price</td>
+                    <td>
+                        @if (tour.IsDeleted == true)
+                        {
+                            <form method="post" asp-page-handler="DeleteTour">
+                                <input type="hidden" name="userId" value="@tour.Id" />
+                                <button type="submit" class="btn btn-danger">Deleted</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation">
+        @{
+            int startPagetour = Math.Max(1, Model.PageTours.CurrentPage - 2);
+            int endPagetour = Math.Min(Model.PageTours.TotalPages, Model.PageTours.CurrentPage + 2);
+        }
+        <ul class="pagination">
+            <li class="page-item @(Model.PageTours.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@(Model.PageTours.CurrentPage - 1)">Previous</a>
+            </li>
+            @for (int i = Math.Max(1, Model.PageTours.CurrentPage - 2);
+            i <= Math.Min(Model.PageTours.TotalPages, Model.PageTours.CurrentPage + 2); i++)
+            {
+                <li class="page-item @(i == Model.PageTours.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.PageTours.CurrentPage == Model.PageTours.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@(Model.PageTours.CurrentPage + 1)">Next</a>
+            </li>
+        </ul>
+
+    </nav>
+</div>
+
+<div class="container mt-4">
+    <h3>Hotel List</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hotel in Model.PageHotels.Items)
+            {
+                <tr>
+                    <td>@hotel.Name</td>
+                    <td>@hotel.Location</td>
+                    <td>
+                        <form method="post" asp-page-handler="DeleteHotel">
+                                <input type="hidden" name="hotelId" value="@hotel.Id" />
+                                <button type="submit" class="btn btn-danger">Deleted</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation">
+        @{
+            int startPagehotel = Math.Max(1, Model.PageHotels.CurrentPage - 2);
+            int endPagehotel = Math.Min(Model.PageHotels.TotalPages, Model.PageHotels.CurrentPage + 2);
+        }
+        <ul class="pagination">
+            <li class="page-item @(Model.PageHotels.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@(Model.PageHotels.CurrentPage - 1)">Previous</a>
+            </li>
+            @for (int i = Math.Max(1, Model.PageHotels.CurrentPage - 2);
+            i <= Math.Min(Model.PageHotels.TotalPages, Model.PageHotels.CurrentPage + 2); i++)
+            {
+                <li class="page-item @(i == Model.PageHotels.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.PageHotels.CurrentPage == Model.PageHotels.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-page="./AdminHome" asp-route-pageIndex="@(Model.PageHotels.CurrentPage + 1)">Next</a>
+            </li>
+        </ul>
+
+    </nav>
+</div>
+   
