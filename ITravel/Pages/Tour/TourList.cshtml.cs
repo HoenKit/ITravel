@@ -1,4 +1,4 @@
-﻿using ITravel.Models;
+using ITravel.Models;
 using ITravel.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

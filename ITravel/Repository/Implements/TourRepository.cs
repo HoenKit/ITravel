@@ -2,6 +2,8 @@
 using ITravel.Models;
 using ITravel.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Drawing.Printing;
 
 namespace ITravel.Repository.Implements
 {
