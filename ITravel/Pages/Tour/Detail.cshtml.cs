@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ITravel.Pages.Toures
+namespace ITravel.Pages.Tour
 {
     public class DetailModel : PageModel
     {
