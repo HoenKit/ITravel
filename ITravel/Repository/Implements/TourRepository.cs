@@ -150,5 +150,11 @@ namespace ITravel.Repository.Implements
             return new PageResult<TourDate>(tours, totalCount, page, pageSize);
         }
 
+        public async Task<Tour> GetTourByTourIdAsync(Guid tourId) => await _context.Tours.FindAsync(tourId);
+
+        public Task<PageResult<Tour>> GetTourPageAsync(int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

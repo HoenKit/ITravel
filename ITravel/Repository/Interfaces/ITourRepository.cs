@@ -25,5 +25,6 @@ namespace ITravel.Repository.Interfaces
            DateTime? startDate = null,
            DateTime? endDate = null,
            List<string> suggestionList = null);
+        public Task<Tour> GetTourByTourIdAsync(Guid tourId);
     }
 }

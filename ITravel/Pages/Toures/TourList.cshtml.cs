@@ -3,7 +3,7 @@ using ITravel.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace ITravel.Pages.Tour
+namespace ITravel.Pages.Toures
 {
     public class TourListModel : PageModel
     {

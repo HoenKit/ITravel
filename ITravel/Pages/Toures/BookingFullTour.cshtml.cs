@@ -10,7 +10,7 @@ using Net.payOS.Types;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
-namespace ITravel.Pages.Tour
+namespace ITravel.Pages.Toures
 {
     [Authorize(Roles = "Users")]
     public class BookingFullTourModel : PageModel
