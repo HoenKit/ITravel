@@ -134,7 +134,6 @@ namespace ITravel.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, "Your account is banned. Please contact support.");
                     return Page();
                 }
-
                 // Attempt to sign in the user
                 var result = await _signInManager.PasswordSignInAsync(Input.UsernameOrEmail, Input.Password, Input.RememberMe, lockoutOnFailure: true);
 
@@ -151,7 +150,7 @@ namespace ITravel.Areas.Identity.Pages.Account
 
                     if (User.IsInRole("Administrator"))
                     {
-                        return LocalRedirect("/Identity/Admin/Dashboard");
+                        return LocalRedirect("/Admin/AdminHome");
                     }
                     if (User.IsInRole("Recruiter"))
                     {

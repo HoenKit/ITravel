@@ -152,9 +152,23 @@ namespace ITravel.Repository.Implements
 
         public async Task<Tour> GetTourByTourIdAsync(Guid tourId) => await _context.Tours.FindAsync(tourId);
 
-        public Task<PageResult<Tour>> GetTourPageAsync(int page, int pageSize)
+        public async Task<ICollection<Tour>> GetAllTourAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Tours
+                .Include(t => t.Provider) 
+                .ToListAsync();
+        }
+        public async Task<PageResult<Tour>> GetTourPageAsync(int page, int pageSize)
+        {
+            var query = await GetAllTourAsync();
+
+            var totalCount = query.Count();
+            var tours = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+            .ToList();
+
+            return new PageResult<Tour>(tours, totalCount, page, pageSize);
         }
     }
 }
