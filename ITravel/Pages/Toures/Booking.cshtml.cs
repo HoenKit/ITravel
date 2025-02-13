@@ -165,8 +165,8 @@ namespace ITravel.Pages.Toures
                 int orderCode = int.Parse(DateTimeOffset.Now.ToString("ffffff"));
                 PaymentRequest.ProductName = "Thanh toán - ITravel";
                 PaymentRequest.Description = "Thanh toán cho chuyến đi";
-                PaymentRequest.CancelUrl = $"http://localhost:5121/Tour/Booking?tourId={tourId}";
-                PaymentRequest.ReturnUrl = $"http://localhost:5121/Tour/SuccessBooking?tourId={tourId}";
+                PaymentRequest.CancelUrl = $"https://itravel-aydah7fya9cuedav.canadacentral-01.azurewebsites.net/Toures/Booking?tourId={tourId}";
+                PaymentRequest.ReturnUrl = $"https://itravel-aydah7fya9cuedav.canadacentral-01.azurewebsites.net/Toures/SuccessBooking?tourId={tourId}";
 
                 ItemData item = new ItemData(PaymentRequest.ProductName, People, tourDate.Tour.Price * people);
                 List<ItemData> items = new List<ItemData> { item };
