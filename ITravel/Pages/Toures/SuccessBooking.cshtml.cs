@@ -117,7 +117,7 @@ namespace ITravel.Pages.Toures
 
                     // Gửi email với tệp đính kèm
                     await _emailSender.SendEmailWithQRAsync(user.Email, "Vé xác nhận đặt tour", emailBody, stream, "QRCode.png");
-                    return RedirectToPage("/Tour/Detail", new { id = tourId });
+                    return RedirectToPage("/Toures/Detail", new { id = tourId });
                 }
             }
         }
