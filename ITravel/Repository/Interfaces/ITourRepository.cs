@@ -16,6 +16,7 @@ namespace ITravel.Repository.Interfaces
            string location = null);
 
         public Tour GetTourByTourDateId(Guid id);
+        public Task<ICollection<Tour>> GetAllTourAsync();
         public Task<PageResult<Tour>> GetTourPageAsync(int page, int pageSize);
         public void UpdateTourDate(TourDate newTourDate);
         public Task<PageResult<TourDate>> GetToursPagedRecommendAsync(
