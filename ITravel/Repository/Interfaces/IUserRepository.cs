@@ -9,5 +9,6 @@ namespace ITravel.Repository.Interfaces
         public Task<PageResult<AppUser>> GetUserPageAsync(int page, int pageSize);
         public Task<AppUser> GetUserByIdAsync(string userId);
         public Task UpdateUserAsync(AppUser user);
+        public Task<string> GetUserIdAsync(string userName);
     }
 }

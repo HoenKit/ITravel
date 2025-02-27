@@ -75,6 +75,11 @@ namespace ITravel.Data
                     .HasForeignKey(ht => ht.TourId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+             builder.Entity<Tour>()
+            .HasOne(t => t.Provider) 
+            .WithMany(p => p.Tours)   
+            .HasForeignKey(t => t.ProviderId) 
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

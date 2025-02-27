@@ -65,5 +65,13 @@ namespace ITravel.Repository.Implements
 
             return new PageResult<AppUser>(users, totalCount, page, pageSize);
         }
+
+        public async Task<string> GetUserIdAsync(string userName)
+        {
+            return await _context.Users
+                .Where(u => u.UserName == userName)
+                .Select(u => u.Id)
+                .FirstOrDefaultAsync();
+        }
     }
 }
