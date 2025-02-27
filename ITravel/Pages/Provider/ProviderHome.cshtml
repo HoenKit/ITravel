@@ -36,7 +36,7 @@
                                 <input type="hidden" class="form-control" id="UserId" name="UserId" value="@(Model.UserId ?? "")">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
-
+                            <a href="TourDetail?id=@tour.Id" class="btn btn-info">Detail</a>
                             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateTourModal-@tour.Id">Update</button>
                         </td>
                     </tr>

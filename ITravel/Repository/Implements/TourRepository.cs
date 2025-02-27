@@ -4,6 +4,7 @@ using ITravel.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Drawing.Printing;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ITravel.Repository.Implements
 {
@@ -150,7 +151,17 @@ namespace ITravel.Repository.Implements
             return new PageResult<TourDate>(tours, totalCount, page, pageSize);
         }
 
-        public async Task<Tour> GetTourByTourIdAsync(Guid tourId) => await _context.Tours.FindAsync(tourId);
+        public async Task<Tour> GetTourByTourIdAsync(Guid tourId)
+        {
+            return _context.Tours
+            .Include(tour => tour.Images)
+            .Include(p => p.ActivitySchedules)
+            .Include(t => t.TourDates)
+            .Include(h => h.HotelTours)
+            .Include(r => r.RestaurantTours)
+            .Where(t => t.Id == tourId)
+            .FirstOrDefault();
+        }
 
         public async Task<ICollection<Tour>> GetAllTourAsync()
         {
@@ -214,5 +225,36 @@ namespace ITravel.Repository.Implements
             return new PageResult<Tour>(tours, totalCount, page, pageSize);
         }
 
+        public async Task AddTourDate(TourDate tourDate)
+        {
+            _context.ToursDate.Add(tourDate);
+            await _context.SaveChangesAsync();
+        }
+
+        public void DeleteTourDate(Guid id)
+        {
+            var tourDate = _context.ToursDate.FirstOrDefault(t => t.Id == id);
+            if (tourDate != null)
+            {
+                _context.ToursDate.Remove(tourDate);
+                _context.SaveChanges();
+            }
+        }
+
+        public async Task AddActivitySchedule(ActivitySchedule activitySchedule)
+        {
+            _context.ActivitySchedules.Add(activitySchedule);
+            await _context.SaveChangesAsync();
+        }
+
+        public void DeleteActivitySchedule(Guid id)
+        {
+            var activitySchedule = _context.ActivitySchedules.FirstOrDefault(t => t.Id == id);
+            if (activitySchedule != null)
+            {
+                _context.ActivitySchedules.Remove(activitySchedule);
+                _context.SaveChanges();
+            }
+        }
     }
 }
