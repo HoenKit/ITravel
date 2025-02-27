@@ -30,6 +30,10 @@ namespace ITravel.Repository.Interfaces
         public Task<PageResult<Tour>> GetTourByProviderIdPageAsync(int page, int pageSize, Guid providerId);
         public Task AddTour(Tour tour);
         public Task Update(Tour tour);
-        public void DeleteTour(Guid id);  
+        public void DeleteTour(Guid id);
+        public Task AddTourDate(TourDate tourDate);
+        public void DeleteTourDate(Guid id);
+        public Task AddActivitySchedule(ActivitySchedule activitySchedule);
+        public void DeleteActivitySchedule(Guid id);
     }
 }

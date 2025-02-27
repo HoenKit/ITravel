@@ -1,0 +1,190 @@
+﻿@page
+@model ITravel.Pages.Provider.TourDetailModel
+@{
+    ViewData["Title"] = "Tour Details";
+}
+
+
+<div style="display: flex; align-items: center; padding-top: 50px; font-size: 200%; font-weight: bold">
+<h2>@Model.Tour.Name</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h4>Description</h4>
+        <p>@Model.Tour.Description</p>
+
+        <h4>Location</h4>
+        <p>@Model.Tour.Location</p>
+
+        <h4>Price</h4>
+        <p>$@Model.Tour.Price</p>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Images</h4>
+        <div class="d-flex flex-wrap">
+            @foreach (var image in Model.Tour.Images)
+            {
+                <img src="~/@image.URL" class="img-thumbnail m-2" style="width: 150px; height: 100px;" />
+            }
+        </div>
+
+        <!-- Tour Dates Section -->
+        <h4>Tour Dates</h4>
+        <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addTourDateModal">Add Tour Date</button>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Max Capacity</th>
+                    <th>Current Capacity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var date in Model.Tour.TourDates.Where(d => !d.IsDeleted))
+                {
+                    <tr>
+                        <td>@date.StartDate.ToString("yyyy-MM-dd")</td>
+                        <td>@date.EndDate.ToString("yyyy-MM-dd")</td>
+                        <td>@date.MaxCapacity</td>
+                        <td>@date.CurrentCapacity</td>
+                        <td>
+                            <form method="post" asp-page-handler="DeleteTourDate">
+                                <input type="hidden" name="tourId" value="@Model.Tour.Id" />
+                                <input type="hidden" name="dateId" value="@date.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Modal Add Tour Date -->
+        <div class="modal fade" id="addTourDateModal" tabindex="-1" aria-labelledby="addTourDateModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTourDateModalLabel">Add Tour Date</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" asp-page-handler="AddTourDate">
+                            <input type="hidden" name="tourId" value="@Model.Tour.Id" />
+
+                            <div class="mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" name="StartDate" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">End Date</label>
+                                <input type="date" name="EndDate" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Max Capacity</label>
+                                <input type="number" name="MaxCapacity" class="form-control" required />
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Schedule Section -->
+        <h4>Activity Schedule</h4>
+        <button class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#addActivityModal">Add Activity</button>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Activity Name</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var activity in Model.Tour.ActivitySchedules)
+                {
+                    <tr>
+                        <td>@activity.DayNumber</td>
+                        <td>@activity.ActivityName</td>
+                        <td>@activity.StartTime</td>
+                        <td>@activity.EndTime</td>
+                        <td>@activity.Location</td>
+                        <td>@activity.Description</td>
+                        <td>
+                            <form method="post" asp-page-handler="DeleteActivity">
+                                <input type="hidden" name="tourId" value="@Model.Tour.Id" />
+                                <input type="hidden" name="activityId" value="@activity.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Modal Add Activity -->
+        <div class="modal fade" id="addActivityModal" tabindex="-1" aria-labelledby="addActivityModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addActivityModalLabel">Add Activity</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" asp-page-handler="AddActivity">
+                            <input type="hidden" name="tourId" value="@Model.Tour.Id" />
+
+                            <div class="mb-3">
+                                <label class="form-label">Day Number</label>
+                                <input type="number" name="DayNumber" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Activity Name</label>
+                                <input type="text" name="ActivityName" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Start Time</label>
+                                <input type="time" name="StartTime" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">End Time</label>
+                                <input type="time" name="EndTime" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Location</label>
+                                <input type="text" name="Location" class="form-control" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Description</label>
+                                <textarea name="Description" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a asp-page="ProviderHome" class="btn btn-secondary mt-3">Back to Tours</a>
