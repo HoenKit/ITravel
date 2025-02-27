@@ -1,0 +1,192 @@
+﻿@page
+@model ITravel.Pages.Provider.ProviderHomeModel
+@{
+}
+<div class="container mt-4">
+    <h2>Tour List</h2>
+
+    <!-- Button Add Tour -->
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTourModal">Add Tour</button>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Location</th>
+                <th>Company Name</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.PageTours?.Items != null && Model.PageTours.Items.Any())
+            {
+                @foreach (var tour in Model.PageTours.Items)
+                {
+                    <tr>
+                        <td>@tour.Name</td>
+                        <td>@tour.Description</td>
+                        <td>@tour.Location</td>
+                        <td>@tour.Provider.CompanyName</td>
+                        <td>@tour.Price</td>
+                        <td>
+                            <form method="post" asp-page-handler="DeleteTour" class="d-inline">
+                                <input type="hidden" name="id" value="@tour.Id" />
+                                <input type="hidden" class="form-control" id="UserId" name="UserId" value="@(Model.UserId ?? "")">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+
+                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateTourModal-@tour.Id">Update</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No tours available.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation">
+        @{
+            int startPage = Math.Max(1, Model.PageTours.CurrentPage - 2);
+            int endPage = Math.Min(Model.PageTours.TotalPages, Model.PageTours.CurrentPage + 2);
+        }
+        <ul class="pagination">
+            <li class="page-item @(Model.PageTours.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-page="./ProviderHome" asp-route-pageIndex="@(Model.PageTours.CurrentPage - 1)">Previous</a>
+            </li>
+            @for (int i = Math.Max(1, Model.PageTours.CurrentPage - 2);
+            i <= Math.Min(Model.PageTours.TotalPages, Model.PageTours.CurrentPage + 2); i++)
+            {
+                <li class="page-item @(i == Model.PageTours.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-page="./ProviderHome" asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.PageTours.CurrentPage == Model.PageTours.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-page="./ProviderHome" asp-route-pageIndex="@(Model.PageTours.CurrentPage + 1)">Next</a>
+            </li>
+        </ul>
+
+    </nav>
+</div>
+
+<!-- Modal Add Tour -->
+<div class="modal fade" id="addTourModal" tabindex="-1" aria-labelledby="addTourModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTourModalLabel">Add New Tour</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="AddTour" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="UserId" />
+
+                    <div class="mb-3">
+                        <label asp-for="Tours.Name" class="form-label">Tour Name</label>
+                        <input type="text" class="form-control" asp-for="Tours.Name" required />
+                        <span asp-validation-for="Tours.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Tours.Description" class="form-label">Description</label>
+                        <textarea class="form-control" asp-for="Tours.Description" required></textarea>
+                        <span asp-validation-for="Tours.Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Tours.Location" class="form-label">Location</label>
+                        <input type="text" class="form-control" asp-for="Tours.Location" required />
+                        <span asp-validation-for="Tours.Location" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Tours.Price" class="form-label">Price</label>
+                        <input type="number" class="form-control" asp-for="Tours.Price" required />
+                        <span asp-validation-for="Tours.Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FileUploads" class="form-label">Upload Images</label>
+                        <input type="file" class="form-control" asp-for="FileUploads" />
+                        <span asp-validation-for="FileUploads" class="text-danger"></span>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Tour</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@foreach (var tour in Model.PageTours.Items)
+{
+    <div class="modal fade" id="updateTourModal-@tour.Id" tabindex="-1" aria-labelledby="updateTourModalLabel-@tour.Id" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateTourModalLabel-@tour.Id">Update Tour</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" enctype="multipart/form-data" asp-page-handler="UpdateTour">
+                        <input type="hidden" name="Tours.Id" value="@tour.Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" name="Tours.Name" value="@tour.Name" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="Tours.Description" required>@tour.Description</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" name="Tours.Location" value="@tour.Location" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Price</label>
+                            <input type="number" class="form-control" name="Tours.Price" value="@tour.Price" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Upload Images</label>
+                            <input type="file" class="form-control" name="FileUploads" multiple />
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script>
+    function validateUpdateTour(tourId) {
+        let name = document.querySelector(`#updateTourModal-${tourId} input[name='Tours.Name']`).value;
+        let description = document.querySelector(`#updateTourModal-${tourId} textarea[name='Tours.Description']`).value;
+        let location = document.querySelector(`#updateTourModal-${tourId} input[name='Tours.Location']`).value;
+        let price = document.querySelector(`#updateTourModal-${tourId} input[name='Tours.Price']`).value;
+
+        if (!name || !description || !location || !price) {
+            alert("All fields are required.");
+            return false;
+        }
+        return true;
+    }
+</script>

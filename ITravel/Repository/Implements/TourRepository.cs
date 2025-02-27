@@ -170,5 +170,49 @@ namespace ITravel.Repository.Implements
 
             return new PageResult<Tour>(tours, totalCount, page, pageSize);
         }
+
+        public async Task AddTour(Tour tour)
+        {
+             _context.Tours.Add(tour);
+            await _context.SaveChangesAsync();
+        }
+
+        public void DeleteTour(Guid id)
+        {
+            var tour = _context.Tours.FirstOrDefault(t => t.Id == id);
+            if(tour != null)
+            {
+                _context.Tours.Remove(tour);
+                _context.SaveChanges();
+            }
+        }
+
+        public async Task Update(Tour tour)
+        {
+             _context.Tours.Update(tour);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<PageResult<Tour>> GetTourByProviderIdPageAsync(int page, int pageSize, Guid providerId)
+        {
+            var query = _context.Tours
+                .Where(t => !t.IsDeleted && t.Provider.Id == providerId);
+
+            var totalCount = await query.CountAsync();
+
+            var tours = await query
+                .Include(t => t.Provider)
+                .Include(t => t.Images)
+                .Include(t => t.ActivitySchedules)
+                .Include(t => t.HotelTours)
+                .Include(t => t.RestaurantTours)
+                .Include(t => t.TourDates)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(); 
+
+            return new PageResult<Tour>(tours, totalCount, page, pageSize);
+        }
+
     }
 }

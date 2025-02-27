@@ -27,5 +27,9 @@ namespace ITravel.Repository.Interfaces
            DateTime? endDate = null,
            List<string> suggestionList = null);
         public Task<Tour> GetTourByTourIdAsync(Guid tourId);
+        public Task<PageResult<Tour>> GetTourByProviderIdPageAsync(int page, int pageSize, Guid providerId);
+        public Task AddTour(Tour tour);
+        public Task Update(Tour tour);
+        public void DeleteTour(Guid id);  
     }
 }

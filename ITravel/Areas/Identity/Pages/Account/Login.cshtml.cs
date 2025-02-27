@@ -152,9 +152,9 @@ namespace ITravel.Areas.Identity.Pages.Account
                     {
                         return LocalRedirect("/Admin/AdminHome");
                     }
-                    if (User.IsInRole("Recruiter"))
+                    if (User.IsInRole("Provider"))
                     {
-                        return LocalRedirect("/Identity/RecruiterInfo/Index");
+                        return LocalRedirect("/Provider/ProviderHome");
                     }
                     return LocalRedirect(returnUrl);
                 }
