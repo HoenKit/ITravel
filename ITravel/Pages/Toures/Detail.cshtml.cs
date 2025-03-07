@@ -86,7 +86,7 @@ namespace ITravel.Pages.Toures
 
             _reviewRepository.CreateReview(newReview);
 
-            return RedirectToPage("/Tour/Detail", new { id });
+            return RedirectToPage("/Toures/Detail", new { id });
         }
         public IActionResult OnPost(string action, Guid reviewId, Guid id, string content, int ratingModal)
         {
@@ -94,7 +94,7 @@ namespace ITravel.Pages.Toures
             {
                 _reviewRepository.DeleteReview(reviewId);
 
-                return RedirectToPage("/Tour/Detail", new { id });
+                return RedirectToPage("/Toures/Detail", new { id });
             }
             if (action == "edit")
             {
@@ -108,10 +108,10 @@ namespace ITravel.Pages.Toures
                     _reviewRepository.UpdateReview(review);
                 }
 
-                return RedirectToPage("/Tour/Detail", new { id });
+                return RedirectToPage("/Toures/Detail", new { id });
             }
 
-            return RedirectToPage("/Tour/Detail", new { id });
+            return RedirectToPage("/Toures/Detail", new { id });
         }
 
     }
