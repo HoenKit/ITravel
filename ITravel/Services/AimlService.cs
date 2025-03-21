@@ -22,7 +22,7 @@ namespace ITravel.Services
             // Dữ liệu gửi lên API
             var requestData = new
             {
-                model = "gpt-4o",
+                model = "gpt-4o-mini",
                 messages = new[]
                 {
                 new { role = "system", content = "You are a travel agent. Be descriptive and helpful." },
